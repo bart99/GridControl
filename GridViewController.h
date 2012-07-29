@@ -15,17 +15,19 @@
 @end
 
 @class GridTableViewController;
+@class GridScrollViewController;
 
 @interface GridViewController : UIViewController
 {
 }
 
-@property(nonatomic, retain) GridTableViewController* gridTable;
+//@property(nonatomic, retain) GridTableViewController* gridTable;
+@property(nonatomic, retain) GridScrollViewController* gridTable;
 @property (retain, nonatomic) IBOutlet UIScrollView *scrollView;
 @property(nonatomic, assign) id<GridViewDelegate> delegate;
 
 - (id)initWithGridRows:(NSUInteger)row andCols:(NSUInteger)col;
-- (id)initWithTitle:(NSArray*)data;
+- (void)setData:(NSArray*)datas;
 
 - (void)showWithAnimated:(BOOL)animated;
 - (void)cancelButtonAction;

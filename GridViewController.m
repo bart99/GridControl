@@ -8,6 +8,7 @@
 
 #import "GridViewController.h"
 #import "GridTableViewController.h"
+#import "GridScrollViewController.h"
 #import "UIDevice-util.h"
 #import "UIView-util.h"
 #import "UIWindow-util.h"
@@ -28,18 +29,8 @@
 	
 	if (self) {
 		self.scrollView = [[UIScrollView alloc] init];
-		self.gridTable = [[GridTableViewController alloc] initWithGridRows:row andCols:col];
-		self.gridTable.gridViewController = self;
+		self.gridTable = [[GridScrollViewController alloc] initWithGridRows:row andCols:col];
 	}
-	
-	return self;
-}
-
-- (id)initWithTitle:(NSArray*)data
-{
-	self = [self initWithGridRows:data.count andCols:1];
-	
-	[self.gridTable setData:data];
 	
 	return self;
 }
@@ -76,13 +67,15 @@
 	[self.view addSubview:self.scrollView];
 	self.scrollView.frame = self.view.bounds;
 	self.scrollView.backgroundColor = [UIColor greenColor];
-	[self.scrollView addSubview:self.gridTable.tableView];
+	[self.scrollView addSubview:self.gridTable.view];
 	[self addChildViewController:self.gridTable];
 	
 	self.scrollView.alwaysBounceHorizontal = YES;
 	self.scrollView.alwaysBounceVertical = YES;
 	
-	self.gridTable.tableView.allowsSelection = NO;
+	self.scrollView.contentSize = self.gridTable.view.frame.size;
+	
+//	self.gridTable.tableView.allowsSelection = NO;
 
 }
 
@@ -96,7 +89,7 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
-	self.scrollView.contentSize = self.gridTable.tableView.frame.size;
+	self.scrollView.contentSize = self.gridTable.view.frame.size;
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -111,6 +104,11 @@
 	[super dealloc];
 }
 
+
+- (void)setData:(NSArray*)datas
+{
+	[self.gridTable setData:datas];
+}
 
 - (void)addColumn:(NSArray*)data
 {
