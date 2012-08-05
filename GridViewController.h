@@ -17,7 +17,7 @@
 @class GridTableViewController;
 @class GridScrollViewController;
 
-@interface GridViewController : UIViewController
+@interface GridViewController : UIViewController <UIScrollViewDelegate>
 {
 }
 
@@ -25,6 +25,8 @@
 @property(nonatomic, retain) GridScrollViewController* gridTable;
 @property (retain, nonatomic) IBOutlet UIScrollView *scrollView;
 @property(nonatomic, assign) id<GridViewDelegate> delegate;
+@property(nonatomic, retain) UIView* colHeaderView;
+@property(nonatomic, retain) UIView* rowHeaderView;
 
 - (id)initWithGridRows:(NSUInteger)row andCols:(NSUInteger)col;
 - (void)setData:(NSArray*)datas;

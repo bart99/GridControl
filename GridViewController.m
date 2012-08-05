@@ -7,7 +7,6 @@
 //
 
 #import "GridViewController.h"
-#import "GridTableViewController.h"
 #import "GridScrollViewController.h"
 #import "UIDevice-util.h"
 #import "UIView-util.h"
@@ -22,13 +21,29 @@
 @synthesize gridTable;
 @synthesize scrollView;
 @synthesize delegate = _delegate;
+@synthesize colHeaderView = _colHeaderView, rowHeaderView = _rowHeaderView;
 
-- (id)initWithGridRows:(NSUInteger)row andCols:(NSUInteger)col
+- (id)init
 {
 	self = [super init];
 	
 	if (self) {
 		self.scrollView = [[UIScrollView alloc] init];
+		self.scrollView.delegate = self;
+		self.colHeaderView = [[UIView alloc] init];
+		self.colHeaderView.backgroundColor = [UIColor redColor];
+		self.rowHeaderView = [[UIView alloc] init];
+		self.rowHeaderView.backgroundColor = [UIColor yellowColor];
+	}
+	
+	return self;
+}
+
+- (id)initWithGridRows:(NSUInteger)row andCols:(NSUInteger)col
+{
+	self = [self init];
+	
+	if (self) {
 		self.gridTable = [[GridScrollViewController alloc] initWithGridRows:row andCols:col];
 	}
 	
@@ -65,7 +80,7 @@
 	[otherBarButtonItem autorelease];
 	
 	[self.view addSubview:self.scrollView];
-	self.scrollView.frame = self.view.bounds;
+	self.scrollView.frame = CGRectMake(44, 44, self.view.frame.size.width, self.view.frame.size.height);
 	self.scrollView.backgroundColor = [UIColor greenColor];
 	[self.scrollView addSubview:self.gridTable.view];
 	[self addChildViewController:self.gridTable];
@@ -75,6 +90,12 @@
 	
 	self.scrollView.contentSize = self.gridTable.view.frame.size;
 	
+	self.colHeaderView.frame =  CGRectMake(0, 0, self.view.frame.size.width, 44);
+	[self.view insertSubview:self.colHeaderView aboveSubview:self.scrollView];
+
+	self.rowHeaderView.frame =  CGRectMake(0, 0, 44, self.view.frame.size.height);
+	[self.view insertSubview:self.rowHeaderView aboveSubview:self.scrollView];
+
 //	self.gridTable.tableView.allowsSelection = NO;
 
 }
@@ -101,6 +122,8 @@
 - (void)dealloc {
 	[gridTable release];
 	[scrollView release];
+	[_colHeaderView release];
+	[_rowHeaderView release];
 	[super dealloc];
 }
 
@@ -241,6 +264,38 @@
 	
 	[self dismissModalViewControllerAnimated:animated];
 	[UIView setModalViewMode:NO];
+}
+
+#pragma mark - UIScrollView delegate
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+{
+//	[self.scrollView addSubview:self.headerView];
+	self.rowHeaderView.frame = CGRectMake(0, -self.scrollView.contentOffset.y, 44, self.scrollView.frame.size.height);
+	self.colHeaderView.frame = CGRectMake(-self.scrollView.contentOffset.x, 0, self.scrollView.frame.size.width, 44);
+}
+
+// called on start of dragging (may require some time and or distance to move)
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
+{
+	
+}
+
+// called on finger up if the user dragged. velocity is in points/second. targetContentOffset may be changed to adjust where the scroll view comes to rest. not called when pagingEnabled is YES
+- (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset
+{
+	
+}
+
+// called on finger up if the user dragged. decelerate is true if it will continue moving afterwards
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
+{
+	
+}
+
+- (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView
+{
+	
 }
 
 @end
